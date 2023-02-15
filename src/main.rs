@@ -1,18 +1,16 @@
-use std::ffi::OsString;
-use std::path::{PathBuf, Path};
 use std::pin::Pin;
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll};
 use std::time::Duration;
 
-use ntex::http::StatusCode;
-use ntex::rt::{self, JoinError};
-use ntex::time::interval;
+use ntex::rt;
 use ntex::util::Bytes;
-use futures::Stream;
+use ntex::time::interval;
+use ntex::http::StatusCode;
 use ntex::web::error::BlockingError;
+use futures::Stream;
 use serde::Serialize;
-use sysinfo::{SystemExt, Disk, DiskType, DiskExt};
+use sysinfo::{SystemExt, Disk, DiskType, DiskExt, CpuExt, System};
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 /// Metrs is a metrics server
 /// It is a simple server that can be use to receive metrics from an host
@@ -92,21 +90,18 @@ struct MemoryInfo {
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
 struct CpuInfo {
-  cpu_usage: f32,
-  cpu_cores: usize,
+  usage: f32,
+  cores: usize,
 }
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "PascalCase")]
 #[serde(tag = "Type", content = "Data")]
 enum Event {
-  MemoryInfo(MemoryInfo),
-  DiskInfo(Vec<DiskInfo>),
+  Memory(MemoryInfo),
+  Cpu(CpuInfo),
+  Disk(Vec<DiskInfo>),
 }
-
-// enum DiskTypeInfo {
-
-// }
 
 #[derive(Clone, Debug, Serialize)]
 struct DiskInfo {
@@ -120,6 +115,7 @@ struct DiskInfo {
 }
 
 #[derive(Clone, Debug, Serialize)]
+#[allow(clippy::upper_case_acronyms)]
 enum DiskInfoType {
   /// HDD type.
   HDD,
@@ -295,7 +291,6 @@ impl EventEmitter {
 
 #[ntex::web::get("/subscribe")]
 async fn subscribe(
-  req: web::HttpRequest,
   event_emitter: web::types::State<EventEmitter>,
 ) -> Result<web::HttpResponse, HttpError> {
   let client = event_emitter.subscribe().await?;
@@ -310,7 +305,6 @@ fn conf_srv(config: &mut web::ServiceConfig) {
   config.service(subscribe);
 }
 
-/// Todo add ssl support
 fn gen_srv(
   event_emitter: EventEmitter,
 ) -> Result<ntex::server::Server, MetrsError> {
@@ -328,7 +322,7 @@ fn gen_srv(
 
 fn send_memory_usage(event_emitter: EventEmitter) {
   rt::spawn(async move {
-    let mut sys = sysinfo::System::default();
+    let mut sys = System::new();
     sys.refresh_memory();
     let memory = MemoryInfo {
       total: sys.total_memory(),
@@ -338,7 +332,7 @@ fn send_memory_usage(event_emitter: EventEmitter) {
       swap_used: sys.used_swap(),
       swap_free: sys.free_swap(),
     };
-    if let Err(err) = event_emitter.emit(Event::MemoryInfo(memory)).await {
+    if let Err(err) = event_emitter.emit(Event::Memory(memory)).await {
       log::error!("{err}");
     }
   });
@@ -346,44 +340,52 @@ fn send_memory_usage(event_emitter: EventEmitter) {
 
 fn send_disk_info(event_emitter: EventEmitter) {
   rt::spawn(async move {
-    let mut sys = sysinfo::System::default();
+    let mut sys = System::new();
     sys.refresh_disks_list();
     let disks = sys.disks().iter().map(DiskInfo::from).collect::<Vec<_>>();
-    if let Err(err) = event_emitter.emit(Event::DiskInfo(disks)).await {
+    if let Err(err) = event_emitter.emit(Event::Disk(disks)).await {
       log::error!("{err}");
     }
   });
 }
 
-// fn send_cpu_usage(event_emitter: EventEmitter) {
-//   rt::spawn(async move {
-//     let mut sys = sysinfo::System::default();
-//     sys.refresh_cpu();
+fn send_cpu_usage(event_emitter: EventEmitter) {
+  rt::spawn(async move {
+    let mut sys = System::new();
+    let interval = interval(Duration::from_secs(2));
 
-//     let cpus = sys.
-//     println!("{cpus:?}");
-
-//     // let cpu = CpuInfo {
-//     //   cpu_usage: sys.cpus()[0]
-//     //   cpu_cores: sys.get_processors().len(),
-//     // };
-//     // let ev = Event::CpuInfo(cpu);
-//     // match Bytes::try_from(ev) {
-//     //   Ok(msg) => {
-//     //     if let Err(err) = event_emitter.emit(msg).await {
-//     //       log::error!("{err}");
-//     //     }
-//     //   }
-//     //   Err(err) => log::error!("{err}"),
-//     // }
-//   });
-// }
+    loop {
+      sys.refresh_cpu();
+      let cpus = sys.cpus();
+      let mut usage_median = 0.0;
+      for cpu in cpus {
+        let usage = cpu.cpu_usage();
+        let frequency = cpu.frequency();
+        println!("frequency: {frequency}");
+        println!("usage: {usage}");
+        usage_median += usage;
+      }
+      println!("median: {usage_median}");
+      usage_median /= cpus.len() as f32;
+      let cpu = CpuInfo {
+        usage: usage_median,
+        cores: cpus.len(),
+      };
+      if let Err(err) = event_emitter.emit(Event::Cpu(cpu)).await {
+        log::error!("{err}");
+      }
+      // Sleeping for 500 ms to let time for the system to run for long
+      // enough to have useful information.
+      interval.tick().await;
+    }
+  });
+}
 
 fn spawn_background_loop(event_emitter: EventEmitter) {
   rt::Arbiter::new().exec_fn(move || {
     rt::spawn(async move {
       let interval = interval(Duration::from_secs(2));
-      // First we update all information of our `System` struct.
+      send_cpu_usage(event_emitter.clone());
       loop {
         send_disk_info(event_emitter.clone());
         send_memory_usage(event_emitter.clone());
@@ -404,6 +406,7 @@ async fn main() -> std::io::Result<()> {
     .format_target(false)
     .init();
 
+  sysinfo::set_open_files_limit(0);
   let event_emitter = EventEmitter::new();
 
   spawn_background_loop(event_emitter.clone());
