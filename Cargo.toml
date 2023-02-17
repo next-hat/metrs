@@ -1,17 +1,14 @@
-[package]
-name = "metrs"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+  "crates/metrs_stubs",
+  "bin/metrsd",
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.dev]
+opt-level = 0
 
-[dependencies]
-clap = { version = "4.1.4", features = ["derive"] }
-env_logger = "0.10.0"
-futures = "0.3.26"
-log = "0.4.17"
-ntex = { version = "0.6.3", features = ["tokio"] }
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.93"
-sysinfo = "0.27.7"
-tokio = "1.25.0"
+[profile.release]
+opt-level = 3
+
+[patch.crates-io]
+metrs_stubs = { path = "crates/metrs_stubs" }
