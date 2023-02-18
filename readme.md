@@ -18,7 +18,7 @@
 
   <p>
 
-  [![codecov](https://codecov.io/gh/nxthat/metrs/branch/nightly/graph/badge.svg?token=4I60HOW6HM)](https://codecov.io/gh/nxthat/metrs)
+[![codecov](https://codecov.io/gh/nxthat/metrs/branch/master/graph/badge.svg?token=N1P1BL5RWH)](https://codecov.io/gh/nxthat/metrs)
 
   </p>
 
