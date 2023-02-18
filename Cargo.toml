@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "crates/metrs_stubs",
+  "crates/metrsd_client",
   "bin/metrsd",
 ]
 
@@ -12,3 +13,4 @@ opt-level = 3
 
 [patch.crates-io]
 metrs_stubs = { path = "crates/metrs_stubs" }
+metrsd_client = { path = "crates/metrsd_client" }

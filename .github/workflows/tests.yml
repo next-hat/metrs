@@ -1,0 +1,45 @@
+name: Tests
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  ubuntu_test:
+    strategy:
+      fail-fast: true
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    # Install rust
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        components: llvm-tools-preview
+    # Cache tests
+    - uses: actions/cache@v3
+      with:
+        path: ./target/llvm-cov-target
+        key: llvm-cov-key
+    # Cache rust
+    - uses: Swatinem/rust-cache@v2
+    # Install cargo make
+    - uses: davidB/rust-cargo-make@v1
+    # Install llvm-cov
+    - uses: taiki-e/install-action@cargo-llvm-cov
+    # Install nextest
+    - uses: taiki-e/install-action@nextest
+    # Prepare CI
+    - name: Run tests
+      run: cargo make covgen
+    # Upload it to codecov
+    - name: Codecov
+      uses: codecov/codecov-action@v3.1.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./lcov.info
+        flags: unittests # optional
+        verbose: true # optional (default = false)
