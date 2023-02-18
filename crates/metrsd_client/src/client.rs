@@ -109,6 +109,8 @@ impl MetrsdClient {
 
 #[cfg(test)]
 mod tests {
+  use crate::error::is_api_error;
+
   use super::*;
 
   #[ntex::test]
@@ -141,5 +143,15 @@ mod tests {
     let client = MetrsdClient::connect("http://321313131");
     let res = client.get("/test".to_string()).send().await;
     assert!(res.is_err());
+  }
+
+  #[ntex::test]
+  async fn test_api_error() {
+    let client = MetrsdClient::connect("http://127.0.0.1:8080");
+    let mut res = client.get("/test".to_string()).send().await.unwrap();
+    let status = res.status();
+    let err = is_api_error(&mut res, &status).await;
+    println!("{err:?}");
+    assert!(err.is_err());
   }
 }

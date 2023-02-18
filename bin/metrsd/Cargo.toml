@@ -2,6 +2,17 @@
 name = "metrsd"
 version = "0.1.0"
 edition = "2021"
+authors = ["nanocl contributors <team@next-hat.com>"]
+description = "The Metrs daemon"
+license = "MIT OR Apache-2.0"
+readme = "../../readme.md"
+repository = "https://github.com/nxthat/metrs"
+
+[[bin]]
+name = "metrsd"
+test = true
+bench = false
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

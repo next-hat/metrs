@@ -3,6 +3,7 @@ members = [
   "crates/metrs_stubs",
   "crates/metrsd_client",
   "bin/metrsd",
+  "bin/metrs",
 ]
 
 [profile.dev]
