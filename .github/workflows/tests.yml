@@ -32,6 +32,12 @@ jobs:
     - uses: taiki-e/install-action@cargo-llvm-cov
     # Install nextest
     - uses: taiki-e/install-action@nextest
+    # Prepare server
+    - name: Start server
+      run: |
+        cargo build --bin metrsd
+        cargo make run-daemon &
+        sleep 10
     # Prepare CI
     - name: Run tests
       run: cargo make covgen
