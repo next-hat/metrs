@@ -111,6 +111,9 @@ mod tests {
     let hosts = vec!["wrong_scheme://dsadas"];
     let srv = gen_srv(&hosts, event_emitter);
     assert!(srv.is_err());
+    let err = srv.unwrap_err();
+    println!("{err}");
+    println!("{err:?}");
   }
 
   #[ntex::test]

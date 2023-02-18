@@ -13,11 +13,8 @@ pub struct MetrsdClient {
 }
 
 impl MetrsdClient {
-  pub fn connect<T>(url: T) -> Self
-  where
-    T: Into<String>,
-  {
-    match url.into() {
+  pub fn connect(url: &'static str) -> Self {
+    match url {
       url if url.starts_with("http://") || url.starts_with("https://") => {
         let client = Client::build()
           .connector(
@@ -27,14 +24,18 @@ impl MetrsdClient {
           )
           .timeout(ntex::time::Millis::from_secs(20))
           .finish();
-        MetrsdClient { client, url }
+        MetrsdClient {
+          client,
+          url: url.to_owned(),
+        }
       }
       url if url.starts_with("unix://") => {
         let client = Client::build()
           .connector(
             Connector::default()
-              .connector(ntex::service::fn_service(|_| async {
-                Ok::<_, _>(rt::unix_connect("/run/nanocl/nanocl.sock").await?)
+              .connector(ntex::service::fn_service(move |_| async {
+                let path = url.trim_start_matches("unix://");
+                Ok::<_, _>(rt::unix_connect(path).await?)
               }))
               .timeout(ntex::time::Millis::from_secs(20))
               .finish(),
@@ -115,12 +116,25 @@ mod tests {
 
   #[ntex::test]
   async fn test_new_client() {
-    let client = MetrsdClient::connect("http://domain.com");
-    assert_eq!(client.url, "http://domain.com");
-    let client = MetrsdClient::connect("https://domain.com");
-    assert_eq!(client.url, "https://domain.com");
+    let client = MetrsdClient::connect("http://32131.next-hat.com");
+    assert_eq!(client.url, "http://32131.next-hat.com");
+    let res = client.subscribe().await;
+    assert!(res.is_err());
+    let client = MetrsdClient::connect("https://32131.next-hat.com");
+    assert_eq!(client.url, "https://32131.next-hat.com");
+    let res = client.subscribe().await;
+    assert!(res.is_err());
     let client = MetrsdClient::connect("unix:///run/_non_existent.sock");
     assert_eq!(client.url, "http://localhost");
+    let res = client.subscribe().await;
+    assert!(res.is_err());
+  }
+
+  #[ntex::test]
+  async fn test_clone_client() {
+    let client = MetrsdClient::connect("http://domain.com");
+    let client2 = client.clone();
+    assert_eq!(client.url, client2.url);
   }
 
   #[ntex::test]
@@ -153,5 +167,7 @@ mod tests {
     let err = is_api_error(&mut res, &status).await;
     println!("{err:?}");
     assert!(err.is_err());
+    let err = err.unwrap_err();
+    println!("{err}");
   }
 }
