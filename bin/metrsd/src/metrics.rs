@@ -94,11 +94,9 @@ pub fn sync_network_info(event_emitter: EventEmitter) {
 
 pub fn spawn_metrics(event_emitter: EventEmitter) {
   rt::Arbiter::new().exec_fn(move || {
-    rt::spawn(async move {
-      sync_cpu_info(event_emitter.clone());
-      sync_network_info(event_emitter.clone());
-      sync_disk_info(event_emitter.clone());
-      sync_memory_info(event_emitter.clone());
-    });
+    sync_cpu_info(event_emitter.clone());
+    sync_network_info(event_emitter.clone());
+    sync_disk_info(event_emitter.clone());
+    sync_memory_info(event_emitter.clone());
   });
 }

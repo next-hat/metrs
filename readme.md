@@ -59,7 +59,6 @@ cargo add metrsd_client
 And then call the subscribe event
 
 ```rust
-
 use metrsd_client::MetrsdClient;
 
 #[ntex::main]
@@ -73,7 +72,6 @@ async fn main() -> std::io::Result<()> {
   }
   Ok(())
 }
-
 ```
 
 ## The cli

@@ -75,7 +75,7 @@ mod tests {
   use ntex::time::interval;
   use futures::{TryStreamExt, StreamExt};
 
-  use crate::metrix;
+  use crate::metrics;
 
   pub fn before() {
     // Build a test env logger
@@ -119,7 +119,7 @@ mod tests {
   #[ntex::test]
   async fn test_subscribe() {
     let event_emitter = EventEmitter::new();
-    metrix::spawn_metrics(event_emitter.clone());
+    metrics::spawn_metrics(event_emitter.clone());
     let srv = generate_server(event_emitter.clone());
     let req = srv.get("/subscribe").send();
     let resp = req.await.unwrap();

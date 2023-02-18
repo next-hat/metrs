@@ -7,12 +7,12 @@
 mod cli;
 mod error;
 mod server;
-mod metrix;
+mod metrics;
 mod event_emitter;
 
 use clap::Parser;
 
-use metrix::*;
+use metrics::*;
 use event_emitter::EventEmitter;
 
 #[ntex::main]
