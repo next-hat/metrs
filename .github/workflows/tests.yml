@@ -36,7 +36,7 @@ jobs:
     - name: Start server
       run: |
         cargo build --bin metrsd
-        cargo make run-daemon &
+        cargo make run-daemon -- --hosts tcp://0.0.0.0:8080 &
         sleep 10
     # Prepare CI
     - name: Run tests
