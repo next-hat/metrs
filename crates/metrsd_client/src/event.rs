@@ -7,7 +7,7 @@ use crate::error::{ApiError, MetrsClientError, is_api_error};
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "PascalCase")]
 #[serde(tag = "Type", content = "Data")]
-pub enum Event {
+pub enum MetrsdEvent {
   Memory(MemoryInfo),
   Cpu(Vec<CpuInfo>),
   Disk(Vec<DiskInfo>),
@@ -17,7 +17,7 @@ pub enum Event {
 impl MetrsdClient {
   pub async fn subscribe(
     &self,
-  ) -> Result<Receiver<Result<Event, ApiError>>, MetrsClientError> {
+  ) -> Result<Receiver<Result<MetrsdEvent, ApiError>>, MetrsClientError> {
     let mut res = self.get("/subscribe".to_string()).send().await?;
     let status = res.status();
     is_api_error(&mut res, &status).await?;
