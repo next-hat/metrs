@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Metrs</h1>
-  <h3>Metrics microservice</h3>
+  <h3>A Metrics Microservice</h3>
   <p>
 
   [![Stars](https://img.shields.io/github/stars/nxthat/metrs?label=%E2%AD%90%20stars%20%E2%AD%90)](https://github.com/nxthat/metrs)
@@ -26,11 +26,12 @@
 
 ## Overview
 
-Metrs is a microservice to help you gather metrics information about an host
-It will send in real time the Cpu, Memory, Disk and Network usage information.
-This service don't store anything in database, it he designed to only emit information.
+Metrs is a lightweight and efficient microservice that provides real-time metrics information about a host's CPU, memory, disk, and network usage.<br/>
+Unlike traditional services, Metrs doesn't store data in a database; its sole purpose is to emit information.
 
 ## The daemon
+
+To use the Metrs daemon, run the following command:
 
 ```console
 Usage: metrsd --hosts <HOSTS>
@@ -48,15 +49,13 @@ metrsd --hosts tcp://127.0.0.1:8080
 
 ## The client
 
-A rust client is available for you to use using [ntex](https://github.com/)
-
-You can install it by running:
+Metrs provides a Rust client that you can use with [ntex](https://github.com/ntex-rs/ntex). To install the client, run the following command:
 
 ```sh
 cargo add metrsd_client
 ```
 
-And then call the subscribe event
+You can then call the subscribe event using the following code:
 
 ```rust
 use metrsd_client::MetrsdClient;
@@ -76,4 +75,4 @@ async fn main() -> std::io::Result<()> {
 
 ## The cli
 
-There is not CLI for the moment but it's planned
+There is no CLI available for Metrs at the moment, but it's planned for future releases.
