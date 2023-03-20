@@ -19,4 +19,4 @@ serde = ["dep:serde"]
 
 [dependencies]
 serde = { version = "1.0.152", features = ["derive"], optional = true }
-sysinfo = { version = "0.28.2", optional = true }
+sysinfo = { version = "0.28.3", optional = true }
