@@ -116,12 +116,12 @@ mod tests {
 
   #[ntex::test]
   async fn test_new_client() {
-    let client = MetrsdClient::connect("http://32131.next-hat.com");
-    assert_eq!(client.url, "http://32131.next-hat.com");
+    let client = MetrsdClient::connect("http://unknow.internal");
+    assert_eq!(client.url, "http://unknow.internal");
     let res = client.subscribe().await;
     assert!(res.is_err());
-    let client = MetrsdClient::connect("https://32131.next-hat.com");
-    assert_eq!(client.url, "https://32131.next-hat.com");
+    let client = MetrsdClient::connect("https://unknow.internal");
+    assert_eq!(client.url, "https://unknow.internal");
     let res = client.subscribe().await;
     assert!(res.is_err());
     let client = MetrsdClient::connect("unix:///run/_non_existent.sock");
