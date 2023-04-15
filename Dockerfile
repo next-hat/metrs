@@ -46,5 +46,8 @@ FROM scratch
 ## Copy the binary
 COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/metrsd /usr/local/bin/metrsd
 
+LABEL org.opencontainers.image.source https://github.com/nxthat/metrs
+LABEL org.opencontainers.image.description Metrics Service
+
 ## Set entrypoint
 ENTRYPOINT ["/usr/local/bin/metrsd"]

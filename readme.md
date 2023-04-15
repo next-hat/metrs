@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Metrs</h1>
-  <h3>A Metrics Microservice</h3>
+  <h3>A Metrics Service</h3>
   <p>
 
   [![Stars](https://img.shields.io/github/stars/nxthat/metrs?label=%E2%AD%90%20stars%20%E2%AD%90)](https://github.com/nxthat/metrs)
@@ -26,7 +26,7 @@
 
 ## Overview
 
-Metrs is a lightweight and efficient microservice that provides real-time metrics information about a host's CPU, memory, disk, and network usage.<br/>
+Metrs is a lightweight and efficient service that provides real-time metrics information about a host's CPU, memory, disk, and network usage.<br/>
 Unlike traditional services, Metrs doesn't store data in a database; its sole purpose is to emit information.
 
 ## The daemon
