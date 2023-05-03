@@ -760,9 +760,9 @@ checksum = "ad0a93d233ebf96623465aad4046a8d3aa4da22d4f4beba5388838c8a434bbb4"
 
 [[package]]
 name = "glommio"
-version = "0.7.0"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd6912e67cabcb397683537cadc80a38136fdea7702430ede1a43207940697a6"
+checksum = "ac1f09bf53139d5680da6325b4e79c6bc1518e94a65ab74df14b7e3693a8c78b"
 dependencies = [
  "ahash",
  "backtrace",
@@ -780,7 +780,6 @@ dependencies = [
  "libc",
  "lockfree",
  "log",
- "membarrier",
  "nix",
  "pin-project-lite",
  "rlimit",
@@ -789,7 +788,7 @@ dependencies = [
  "signal-hook",
  "sketches-ddsketch",
  "smallvec",
- "socket2 0.3.19",
+ "socket2 0.4.9",
  "tracing",
  "typenum",
 ]
@@ -969,18 +968,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "membarrier"
-version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4311d6f041084d9a80ccbcb5fbd800beeff1cb6e966d763afa6653252f28af10"
-dependencies = [
- "cfg-if",
- "lazy_static",
- "libc",
- "windows-sys 0.45.0",
-]
-
-[[package]]
 name = "memchr"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1104,9 +1091,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "0.6.5"
+version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "374013b45c3d47cd41532cfef6bfa094e28d3375492c98ee39aadd764b4a5aee"
+checksum = "5807f908e7d45a81792e8d790d2457ca5faaf837b75c7aeee72ab0fd51ff8b74"
 dependencies = [
  "async-channel",
  "async-oneshot",
@@ -1208,9 +1195,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-glommio"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f32828a770aff9038c7bf20e6a6d6c7679f281a4742f6ca5b2acd460ec553d36"
+checksum = "2fed9bd8868b349b902b9341196ac80db7a752c036f89ce50a8053d018801ed1"
 dependencies = [
  "async-oneshot",
  "futures-lite",
@@ -1223,9 +1210,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-h2"
-version = "0.2.1"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f5a001029f1e2c3dbdb4bbfdefdfa4cc38325e24765b05c6ea9b5346c7b881b"
+checksum = "d202cd98a354e782d0c5cced29e6357da44c40ca778b63e4b2b85138dd679e97"
 dependencies = [
  "bitflags",
  "fxhash",
@@ -1296,9 +1283,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-rt"
-version = "0.4.7"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b375e6b332b2bfdf0654daca2b0fd8ea81f1576541fae3b403f774b620ecf3fc"
+checksum = "04f780c84494da078bdfa1567964a2fb3ca044859a2af61e01b3ee6892a8836a"
 dependencies = [
  "async-channel",
  "async-oneshot",
@@ -1312,9 +1299,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-service"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f2bb63ae7a48c48a707ca02a12dde66dce46615b74b98b83c045b2ce45888fe"
+checksum = "caf207fde771c30613f12d25050c2df2847fe6042f9b9b25180d81fc192e51c4"
 dependencies = [
  "pin-project-lite",
 ]
@@ -1350,9 +1337,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-util"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d008a7c5576dfd79cb6412be29425643d8e9eb9ffa9e6cd065c7fd6474ec46ac"
+checksum = "7670b16cc873dae1cbc962c571786e9c92c26662c37800c06333e6195493f474"
 dependencies = [
  "bitflags",
  "futures-core",
@@ -1691,17 +1678,6 @@ name = "smallvec"
 version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
-
-[[package]]
-name = "socket2"
-version = "0.3.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "122e570113d28d773067fab24266b66753f6ea915758651696b6e35e49f88d6e"
-dependencies = [
- "cfg-if",
- "libc",
- "winapi",
-]
 
 [[package]]
 name = "socket2"
