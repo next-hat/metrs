@@ -25,5 +25,5 @@ ntex = { version = "0.6.7", features = ["tokio", "rustls"] }
 serde = { version = "1.0.163", features = ["derive"] }
 serde_json = "1.0.96"
 sysinfo = "0.28.2"
-tokio = "1.28.0"
+tokio = "1.28.1"
 metrs_stubs = { version = "0.1.0", features = ["serde", "sysinfo"] }
