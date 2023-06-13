@@ -18,5 +18,5 @@ sysinfo = ["dep:sysinfo"]
 serde = ["dep:serde"]
 
 [dependencies]
-serde = { version = "1.0.163", features = ["derive"], optional = true }
+serde = { version = "1.0.164", features = ["derive"], optional = true }
 sysinfo = { version = "0.28.2", optional = true }
