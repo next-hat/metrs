@@ -1,7 +1,7 @@
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [package]
 name = "metrs_stubs"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["nanocl contributors <team@next-hat.com>"]
 description = "Metrs shared data type"
@@ -19,4 +19,4 @@ serde = ["dep:serde"]
 
 [dependencies]
 serde = { version = "1.0.164", features = ["derive"], optional = true }
-sysinfo = { version = "0.28.2", optional = true }
+sysinfo = { version = "0.29.2", optional = true }

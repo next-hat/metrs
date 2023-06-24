@@ -2,13 +2,13 @@
 use serde::{Serialize, Deserialize};
 
 #[cfg(feature = "sysinfo")]
-use sysinfo::{Disk, DiskType, DiskExt};
+use sysinfo::{Disk, DiskKind, DiskExt};
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "PascalCase"))]
 pub struct DiskInfo {
-  pub r#type: DiskInfoType,
+  pub kind: DiskInfoKind,
   pub device_name: String,
   pub file_system: Vec<u8>,
   pub mount_point: String,
@@ -21,7 +21,7 @@ pub struct DiskInfo {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "UPPERCASE"))]
 #[allow(clippy::upper_case_acronyms)]
-pub enum DiskInfoType {
+pub enum DiskInfoKind {
   /// HDD type.
   HDD,
   /// SSD type.
@@ -31,12 +31,12 @@ pub enum DiskInfoType {
 }
 
 #[cfg(feature = "sysinfo")]
-impl From<DiskType> for DiskInfoType {
-  fn from(disk_type: DiskType) -> Self {
+impl From<DiskKind> for DiskInfoKind {
+  fn from(disk_type: DiskKind) -> Self {
     match disk_type {
-      DiskType::HDD => Self::HDD,
-      DiskType::SSD => Self::SSD,
-      DiskType::Unknown(val) => Self::Unknown(val),
+      DiskKind::HDD => Self::HDD,
+      DiskKind::SSD => Self::SSD,
+      DiskKind::Unknown(val) => Self::Unknown(val),
     }
   }
 }
@@ -45,7 +45,7 @@ impl From<DiskType> for DiskInfoType {
 impl From<&Disk> for DiskInfo {
   fn from(disk: &Disk) -> Self {
     Self {
-      r#type: disk.type_().into(),
+      kind: disk.kind().to_owned().into(),
       device_name: disk.name().to_str().unwrap_or_default().to_owned(),
       file_system: disk.file_system().to_vec(),
       mount_point: disk.mount_point().display().to_string(),

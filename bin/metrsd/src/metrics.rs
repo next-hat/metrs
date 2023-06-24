@@ -12,11 +12,9 @@ pub fn sync_cpu_info(event_emitter: EventEmitter) {
   rt::spawn(async move {
     let mut sys = System::new();
     let interval = interval(Duration::from_secs(2));
-
     loop {
       sys.refresh_cpu();
       let cpus = sys.cpus().iter().map(CpuInfo::from).collect::<Vec<_>>();
-
       if let Err(err) = event_emitter.emit(Event::Cpu(cpus)).await {
         log::error!("{err}");
       }
