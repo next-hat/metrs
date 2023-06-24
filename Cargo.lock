@@ -992,11 +992,11 @@ dependencies = [
 
 [[package]]
 name = "metrs"
-version = "0.1.0"
+version = "0.3.0"
 
 [[package]]
 name = "metrs_stubs"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "serde",
  "sysinfo",
@@ -1004,7 +1004,7 @@ dependencies = [
 
 [[package]]
 name = "metrsd"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "clap",
  "env_logger",
@@ -1020,7 +1020,7 @@ dependencies = [
 
 [[package]]
 name = "metrsd_client"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "futures",
  "metrs_stubs",
