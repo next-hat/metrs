@@ -1,19 +1,19 @@
 # stage 1 - Setup cargo-chef
-FROM rust:1.67.0-alpine3.17 as planner
+FROM rust:1.70.0-alpine3.17 as planner
 
 WORKDIR /app
 RUN apk add gcc g++ make
 RUN cargo install cargo-chef --locked
 COPY ./Cargo.toml ./Cargo.toml
 COPY ./Cargo.lock ./Cargo.lock
-COPY ./crates/metrs_stubs/Cargo.toml ./crates/metrs_stubs/Cargo.toml
-COPY ./crates/metrsd_client/Cargo.toml ./crates/metrsd_client/Cargo.toml
+COPY ./crates/metrs_stubs ./crates/metrs_stubs
+COPY ./crates/metrsd_client ./crates/metrsd_client
 COPY ./bin/metrs/Cargo.toml ./bin/metrs/Cargo.toml
 COPY ./bin/metrsd/Cargo.toml ./bin/metrsd/Cargo.toml
 RUN cargo chef prepare --recipe-path recipe.json --bin ./bin/metrsd
 
 # state 2 - Cook our dependencies
-FROM rust:1.67.0-alpine3.17 as cacher
+FROM rust:1.70.0-alpine3.17 as cacher
 
 WORKDIR /app
 COPY --from=planner /usr/local/cargo/bin/cargo-chef /usr/local/cargo/bin/cargo-chef
@@ -23,7 +23,7 @@ ENV RUSTFLAGS="-C target-feature=+crt-static"
 RUN cargo chef cook --release --target=x86_64-unknown-linux-musl --recipe-path recipe.json --bin metrsd
 
 # stage 3 - Build our project
-FROM rust:1.67.0-alpine3.17 as builder
+FROM rust:1.70.0-alpine3.17 as builder
 
 ## Build our metrs daemon binary
 WORKDIR /app
