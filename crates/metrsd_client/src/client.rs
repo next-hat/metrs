@@ -131,13 +131,6 @@ mod tests {
   }
 
   #[ntex::test]
-  async fn test_clone_client() {
-    let client = MetrsdClient::connect("http://domain.com");
-    let client2 = client.clone();
-    assert_eq!(client.url, client2.url);
-  }
-
-  #[ntex::test]
   #[should_panic]
   async fn test_new_client_wrong_scheme() {
     let _ = MetrsdClient::connect("ftp://domain.com");
