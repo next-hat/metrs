@@ -1,5 +1,5 @@
 # stage 1 - Setup cargo-chef
-FROM rust:1.70.0-alpine3.17 as planner
+FROM --platform=$BUILDPLATFORM rust:1.70.0-alpine3.17 as planner
 
 WORKDIR /app
 RUN apk add gcc g++ make
@@ -13,14 +13,15 @@ COPY ./bin/metrsd/Cargo.toml ./bin/metrsd/Cargo.toml
 RUN cargo chef prepare --recipe-path recipe.json --bin ./bin/metrsd
 
 # state 2 - Cook our dependencies
-FROM rust:1.70.0-alpine3.17 as cacher
+FROM --platform=$BUILDPLATFORM rust:1.70.0-alpine3.17 as cacher
 
 WORKDIR /app
 COPY --from=planner /usr/local/cargo/bin/cargo-chef /usr/local/cargo/bin/cargo-chef
 COPY --from=planner /app .
 RUN apk add musl-dev libpq-dev openssl-dev
 ENV RUSTFLAGS="-C target-feature=+crt-static"
-RUN cargo chef cook --release --target=x86_64-unknown-linux-musl --recipe-path recipe.json --bin metrsd
+RUN export ARCH=$(uname -m) \
+  && cargo chef cook --release --target=$ARCH-unknown-linux-musl --recipe-path recipe.json --bin metrsd
 
 # stage 3 - Build our project
 FROM rust:1.70.0-alpine3.17 as builder
@@ -34,20 +35,22 @@ COPY ./crates/metrs_stubs/src ./crates/metrs_stubs/src
 COPY .git ./.git
 RUN apk add musl-dev libpq-dev openssl-dev git upx
 ENV RUSTFLAGS="-C target-feature=+crt-static"
-RUN cargo build --release --target=x86_64-unknown-linux-musl --bin metrsd
+RUN export ARCH=$(uname -m) \
+  && cargo build --release --target=$ARCH-unknown-linux-musl --bin metrsd
 
-## Strip and compress the binary
-RUN strip /app/target/x86_64-unknown-linux-musl/release/metrsd
-RUN upx /app/target/x86_64-unknown-linux-musl/release/metrsd
+## Compress the binary
+RUN export ARCH=$(uname -m) \
+  && upx --lzma --best /app/target/$ARCH-unknown-linux-musl/release/metrsd \
+  && cp /app/target/$ARCH-unknown-linux-musl/release/metrsd /bin/metrsd
 
 # stage 4 - Create runtime image
 FROM scratch
 
 ## Copy the binary
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/metrsd /usr/local/bin/metrsd
+COPY --from=builder /bin/metrsd /bin/metrsd
 
 LABEL org.opencontainers.image.source https://github.com/nxthat/metrs
-LABEL org.opencontainers.image.description Metrics Service
+LABEL org.opencontainers.image.description Metrics Emitter
 
 ## Set entrypoint
-ENTRYPOINT ["/usr/local/bin/metrsd"]
+ENTRYPOINT ["/bin/metrsd"]

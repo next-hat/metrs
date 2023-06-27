@@ -10,7 +10,10 @@ members = [
 opt-level = 0
 
 [profile.release]
-opt-level = 3
+opt-level = "z"
+strip = true
+lto = true
+codegen-units = 1
 
 [patch.crates-io]
 metrs_stubs = { path = "crates/metrs_stubs" }
