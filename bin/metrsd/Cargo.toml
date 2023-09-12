@@ -23,7 +23,7 @@ futures = "0.3.26"
 log = "0.4.20"
 ntex = { version = "0.7.4", features = ["tokio", "rustls"] }
 serde = { version = "1.0.188", features = ["derive"] }
-serde_json = "1.0.105"
+serde_json = "1.0.106"
 sysinfo = "0.29.10"
 tokio = "1.32.0"
 metrs_stubs = { version = "0.3.0", features = ["serde", "sysinfo"] }
