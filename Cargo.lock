@@ -956,9 +956,9 @@ dependencies = [
 
 [[package]]
 name = "memchr"
-version = "2.5.0"
+version = "2.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
+checksum = "f665ee40bc4a3c5590afb1e9677db74a508659dfd71e126420da8274909a0167"
 
 [[package]]
 name = "memoffset"
@@ -1086,9 +1086,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "0.7.4"
+version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a37face4d6dfad0b8b343b08279f086c4f1215f423c9065b680ac7d9b40c5bf"
+checksum = "527d8d38d101e396ac82f2f609c7135acf6f419aef3e8b2e18824ae42280f6a0"
 dependencies = [
  "async-channel",
  "async-oneshot",
@@ -1239,9 +1239,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-io"
-version = "0.3.3"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1aecf8a4fdc1f6abcb48b186d461d32541af822d6c2dcaebe126f83717a7b063"
+checksum = "ab7c06d85d133cb8f0d3fb5d586eb9801e3487c9a5295067dcb89a42763ba8c4"
 dependencies = [
  "bitflags",
  "log",
@@ -1265,9 +1265,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-router"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67631bca69fc552ba9615b36637eee827fbf4752eec4c7bc10f7135695cc1b9e"
+checksum = "928151097c88a16f21e153bca5a8a19a1df25cdf96a6b348d9dd72b93d8c8bb1"
 dependencies = [
  "http",
  "log",
@@ -1482,9 +1482,21 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.8.4"
+version = "1.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d0ab3ca65655bb1e41f2a8c8cd662eb4fb035e67c3f78da1d61dffe89d07300f"
+checksum = "ebee201405406dbf528b8b672104ae6d6d63e6d118cb10e4d51abbc7b58044ff"
+dependencies = [
+ "aho-corasick",
+ "memchr",
+ "regex-automata",
+ "regex-syntax",
+]
+
+[[package]]
+name = "regex-automata"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59b23e92ee4318893fa3fe3e6fb365258efbfe6ac6ab30f090cdcbb7aa37efa9"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -1493,9 +1505,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.7.2"
+version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "436b050e76ed2903236f032a59761c1eb99e1b0aead2c257922771dab1fc8c78"
+checksum = "dbb5fb1acd8a1a18b3dd5be62d25485eb770e05afb408a9627d14d451bae12da"
 
 [[package]]
 name = "ring"
