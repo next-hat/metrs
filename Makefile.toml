@@ -17,12 +17,12 @@ command = "cargo"
 args = ["run", "--bin", "metrsd", "${@}"]
 
 # Test all
-[tasks.test]
+[tasks.tests]
 command = "cargo"
 args = ["nextest", "run", "-j", "1"]
 
 # Test all with debug output
-[tasks.test-debug]
+[tasks.tests-debug]
 command = "cargo"
 args = ["test", "--", "--nocapture"]
 
