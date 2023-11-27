@@ -24,6 +24,6 @@ log = "0.4.20"
 ntex = { version = "0.7.11", features = ["tokio"] }
 serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "1.0.108"
-sysinfo = "0.29.10"
+sysinfo = "0.29.11"
 tokio = "1.34.0"
 metrs_stubs = { version = "0.3.0", features = ["serde", "sysinfo"] }
