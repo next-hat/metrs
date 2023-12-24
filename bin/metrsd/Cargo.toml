@@ -1,6 +1,6 @@
 [package]
 name = "metrsd"
-version = "0.3.2"
+version = "0.4.0"
 edition = "2021"
 authors = ["nanocl contributors <team@next-hat.com>"]
 description = "The Metrs daemon"
@@ -21,9 +21,9 @@ clap = { version = "4.4.11", features = ["derive"] }
 env_logger = "0.10.1"
 futures = "0.3.29"
 log = "0.4.20"
-ntex = { version = "0.7.13", features = ["tokio"] }
+ntex = { version = "0.7.16", features = ["tokio"] }
 serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "1.0.108"
 sysinfo = "0.29.11"
 tokio = "1.35.0"
-metrs_stubs = { version = "0.3.0", features = ["serde", "sysinfo"] }
+metrs_stubs = { version = "0.4.0", features = ["serde", "sysinfo"] }
