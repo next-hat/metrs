@@ -1,5 +1,4 @@
-use ntex::web;
-use ntex::http::StatusCode;
+use ntex::{web, http::StatusCode};
 
 use crate::event_emitter::EventEmitter;
 use crate::error::{MetrsError, HttpError};
@@ -119,7 +118,7 @@ mod tests {
   #[ntex::test]
   async fn test_subscribe() {
     let event_emitter = EventEmitter::new();
-    metrics::spawn_metrics(event_emitter.clone());
+    metrics::spawn_metrics(event_emitter.clone(), 10);
     let srv = generate_server(event_emitter.clone());
     let req = srv.get("/subscribe").send();
     let resp = req.await.unwrap();

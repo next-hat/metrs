@@ -1102,20 +1102,11 @@ dependencies = [
 
 [[package]]
 name = "metrs"
-version = "0.3.0"
+version = "0.4.1"
 
 [[package]]
 name = "metrs_stubs"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaa82f6f9c8741b1089fe432413dd8b1586533ccd0a92257eb8aaea990baf177"
-dependencies = [
- "serde",
-]
-
-[[package]]
-name = "metrs_stubs"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "serde",
  "sysinfo",
@@ -1123,13 +1114,13 @@ dependencies = [
 
 [[package]]
 name = "metrsd"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "clap",
  "env_logger",
  "futures",
  "log",
- "metrs_stubs 0.4.0",
+ "metrs_stubs",
  "ntex",
  "serde",
  "serde_json",
@@ -1139,10 +1130,10 @@ dependencies = [
 
 [[package]]
 name = "metrsd_client"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "futures",
- "metrs_stubs 0.3.0",
+ "metrs_stubs",
  "ntex",
  "serde",
  "serde_json",

@@ -11,6 +11,9 @@ pub struct Cli {
     required = true
   )]
   pub hosts: Vec<String>,
+  /// Interval between two metrics publications
+  #[clap(short, long, default_value = "10")]
+  pub tick_interval: u64,
 }
 
 /// Cli arguments unit test

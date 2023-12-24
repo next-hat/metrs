@@ -1,6 +1,6 @@
 [package]
 name = "metrsd_client"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 authors = ["nanocl contributors <team@next-hat.com>"]
 description = "The Metrs daemon api client"
@@ -20,9 +20,9 @@ glommio = ["ntex/glommio"]
 async-std = ["ntex/async-std"]
 
 [dependencies]
-futures = "0.3.29"
-ntex = { version = "0.7.13" }
-serde = { version = "1.0.193", features = ["derive"] }
-serde_json = "1.0.108"
-thiserror = "1.0.50"
-metrs_stubs = { version = "0.3.0", features = ["serde"] }
+futures = "0.3"
+ntex = { version = "0.7" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+metrs_stubs = { version = "0.4", features = ["serde"] }

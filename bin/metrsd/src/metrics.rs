@@ -1,17 +1,16 @@
 use std::time::Duration;
 
-use ntex::rt;
-use ntex::time::interval;
+use ntex::{rt, time::interval};
 use sysinfo::{System, SystemExt, NetworksExt, NetworkExt};
 
 use metrs_stubs::{CpuInfo, DiskInfo, MemoryInfo, NetworkInfo};
 
 use crate::event_emitter::{Event, EventEmitter};
 
-pub fn sync_cpu_info(event_emitter: EventEmitter) {
+pub fn sync_cpu_info(event_emitter: EventEmitter, tick_interval: u64) {
   rt::spawn(async move {
     let mut sys = System::new();
-    let interval = interval(Duration::from_secs(2));
+    let interval = interval(Duration::from_secs(tick_interval));
     loop {
       sys.refresh_cpu();
       let cpus = sys.cpus().iter().map(CpuInfo::from).collect::<Vec<_>>();
@@ -25,10 +24,10 @@ pub fn sync_cpu_info(event_emitter: EventEmitter) {
   });
 }
 
-pub fn sync_disk_info(event_emitter: EventEmitter) {
+pub fn sync_disk_info(event_emitter: EventEmitter, tick_interval: u64) {
   rt::spawn(async move {
     let mut sys = System::new();
-    let interval = interval(Duration::from_secs(2));
+    let interval = interval(Duration::from_secs(tick_interval));
     loop {
       sys.refresh_disks_list();
       let disks = sys.disks().iter().map(DiskInfo::from).collect::<Vec<_>>();
@@ -40,10 +39,10 @@ pub fn sync_disk_info(event_emitter: EventEmitter) {
   });
 }
 
-pub fn sync_memory_info(event_emitter: EventEmitter) {
+pub fn sync_memory_info(event_emitter: EventEmitter, tick_interval: u64) {
   rt::spawn(async move {
     let mut sys = System::new();
-    let interval = interval(Duration::from_secs(2));
+    let interval = interval(Duration::from_secs(tick_interval));
     loop {
       sys.refresh_memory();
       let memory = MemoryInfo {
@@ -62,10 +61,10 @@ pub fn sync_memory_info(event_emitter: EventEmitter) {
   });
 }
 
-pub fn sync_network_info(event_emitter: EventEmitter) {
+pub fn sync_network_info(event_emitter: EventEmitter, tick_interval: u64) {
   rt::spawn(async move {
     let mut sys = System::new();
-    let interval = interval(Duration::from_secs(2));
+    let interval = interval(Duration::from_secs(tick_interval));
     loop {
       sys.refresh_networks_list();
       let networks = sys
@@ -90,11 +89,11 @@ pub fn sync_network_info(event_emitter: EventEmitter) {
   });
 }
 
-pub fn spawn_metrics(event_emitter: EventEmitter) {
+pub fn spawn_metrics(event_emitter: EventEmitter, tick_interval: u64) {
   rt::Arbiter::new().exec_fn(move || {
-    sync_cpu_info(event_emitter.clone());
-    sync_network_info(event_emitter.clone());
-    sync_disk_info(event_emitter.clone());
-    sync_memory_info(event_emitter);
+    sync_cpu_info(event_emitter.clone(), tick_interval);
+    sync_network_info(event_emitter.clone(), tick_interval);
+    sync_disk_info(event_emitter.clone(), tick_interval);
+    sync_memory_info(event_emitter, tick_interval);
   });
 }

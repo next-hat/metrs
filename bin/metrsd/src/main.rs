@@ -20,19 +20,16 @@ async fn main() -> std::io::Result<()> {
   let cli = cli::Cli::parse();
   // Build env logger
   if std::env::var("LOG_LEVEL").is_err() {
-    std::env::set_var("LOG_LEVEL", "metrsd=info,warn,error,metrsd=debug");
+    std::env::set_var("LOG_LEVEL", "metrsd=debug");
   }
   env_logger::Builder::new()
     .parse_env("LOG_LEVEL")
     .format_target(false)
     .init();
-
   sysinfo::set_open_files_limit(0);
   let event_emitter = EventEmitter::new();
-
-  spawn_metrics(event_emitter.clone());
-
-  log::info!("Starting server");
+  spawn_metrics(event_emitter.clone(), cli.tick_interval);
+  log::info!("Server starting");
   let srv = match server::gen_srv(&cli.hosts, event_emitter) {
     Err(err) => {
       println!("{err}");
