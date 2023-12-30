@@ -1,41 +1,23 @@
-use std::pin::Pin;
-use std::time::Duration;
-use std::sync::{Arc, Mutex};
-use std::task::{Context, Poll};
+use std::{
+  pin::Pin,
+  time::Duration,
+  sync::{Arc, Mutex},
+  task::{Context, Poll},
+};
 
-use ntex::rt;
-use ntex::web;
-use ntex::util::Bytes;
-use ntex::time::interval;
-use ntex::http::StatusCode;
-use ntex::web::error::{Error, BlockingError};
+use ntex::{
+  rt, web,
+  util::Bytes,
+  time::interval,
+  http::StatusCode,
+  web::error::{Error, BlockingError},
+};
 use futures::Stream;
 use tokio::sync::mpsc::{Sender, Receiver, channel};
+
 use metrs_stubs::*;
 
-use crate::error::{HttpError, MetrsError};
-
-#[derive(Clone, Debug, serde::Serialize)]
-#[serde(rename_all = "PascalCase")]
-#[serde(tag = "Type", content = "Data")]
-pub enum Event {
-  Memory(MemoryInfo),
-  Cpu(Vec<CpuInfo>),
-  Disk(Vec<DiskInfo>),
-  Network(Vec<NetworkInfo>),
-}
-
-impl TryFrom<Event> for Bytes {
-  type Error = MetrsError;
-
-  fn try_from(value: Event) -> Result<Self, Self::Error> {
-    serde_json::to_string(&value)
-      .map_err(|err| {
-        MetrsError::Error(format!("Unable to serialize memory info: {err}"))
-      })
-      .map(|res| Bytes::from(res + "\n"))
-  }
-}
+use crate::error::HttpError;
 
 // Wrap Receiver in our own type, with correct error type
 pub struct Client(Receiver<Bytes>);
@@ -89,7 +71,7 @@ impl EventEmitter {
 
   /// Check if clients are still connected
   fn check_connection(&mut self) -> Result<(), HttpError> {
-    log::debug!("Checking alive connection...");
+    log::trace!("Checking alive connection...");
     let mut alive_clients = Vec::new();
     let clients = self
       .inner
@@ -106,7 +88,7 @@ impl EventEmitter {
         alive_clients.push(client.clone());
       }
     }
-    log::debug!("Alive clients: {}", alive_clients.len());
+    log::trace!("Alive clients: {}", alive_clients.len());
     self
       .inner
       .lock()
@@ -145,9 +127,13 @@ impl EventEmitter {
     Ok(Client(rx))
   }
 
-  pub async fn emit(&self, ev: Event) -> Result<(), HttpError> {
+  pub async fn emit(&self, ev: MetrsdEvent) -> Result<(), HttpError> {
     let this = self.clone();
     rt::spawn(async move {
+      let msg = Bytes::try_from(ev).map_err(|err| HttpError {
+        status: StatusCode::INTERNAL_SERVER_ERROR,
+        msg: format!("Unable to serialize event: {err}"),
+      })?;
       let clients = this
         .inner
         .lock()
@@ -158,10 +144,6 @@ impl EventEmitter {
         .clients
         .clone();
       for client in clients {
-        let msg = Bytes::try_from(ev.clone()).map_err(|err| HttpError {
-          status: StatusCode::INTERNAL_SERVER_ERROR,
-          msg: format!("Unable to serialize event: {err}"),
-        })?;
         let _ = client.send(msg.clone()).await;
       }
       Ok::<(), HttpError>(())

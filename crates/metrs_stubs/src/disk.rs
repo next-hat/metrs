@@ -2,7 +2,7 @@
 use serde::{Serialize, Deserialize};
 
 #[cfg(feature = "sysinfo")]
-use sysinfo::{Disk, DiskKind, DiskExt};
+use sysinfo::{Disk, DiskKind};
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -10,7 +10,7 @@ use sysinfo::{Disk, DiskKind, DiskExt};
 pub struct DiskInfo {
   pub kind: DiskInfoKind,
   pub device_name: String,
-  pub file_system: Vec<u8>,
+  pub file_system: String,
   pub mount_point: String,
   pub total_space: u64,
   pub available_space: u64,
@@ -47,7 +47,7 @@ impl From<&Disk> for DiskInfo {
     Self {
       kind: disk.kind().to_owned().into(),
       device_name: disk.name().to_str().unwrap_or_default().to_owned(),
-      file_system: disk.file_system().to_vec(),
+      file_system: disk.file_system().to_str().unwrap_or_default().to_owned(),
       mount_point: disk.mount_point().display().to_string(),
       total_space: disk.total_space(),
       available_space: disk.available_space(),

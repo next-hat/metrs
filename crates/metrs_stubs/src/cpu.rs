@@ -2,7 +2,7 @@
 use serde::{Serialize, Deserialize};
 
 #[cfg(feature = "sysinfo")]
-use sysinfo::{Cpu, CpuExt};
+use sysinfo::Cpu;
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

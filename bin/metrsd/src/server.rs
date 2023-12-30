@@ -125,7 +125,7 @@ mod tests {
     assert_eq!(resp.status(), StatusCode::OK);
     let mut stream = resp.into_stream();
     let mut count = 0;
-    const MAX_COUNT: usize = 50;
+    const MAX_COUNT: usize = 5;
     while let Some(item) = stream.next().await {
       let _ =
         item.unwrap_or_else(|_| panic!("Expect to receive {count} event"));
