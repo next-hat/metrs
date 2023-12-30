@@ -1,8 +1,12 @@
-use ntex::rt;
-use ntex::channel::mpsc::Receiver;
-use ntex::http::{Client, StatusCode};
-use ntex::http::client::{Connector, ClientRequest, ClientResponse};
 use futures::{StreamExt, TryStreamExt};
+use ntex::{
+  rt,
+  channel::mpsc::Receiver,
+  http::{
+    Client, StatusCode,
+    client::{Connector, ClientRequest, ClientResponse},
+  },
+};
 
 use crate::error::ApiError;
 
