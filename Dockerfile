@@ -1,5 +1,5 @@
 # stage 1 - Setup cargo-chef
-FROM --platform=$BUILDPLATFORM rust:1.74.0-alpine3.17 as planner
+FROM --platform=$BUILDPLATFORM rust:1.75.0-alpine3.19 as planner
 
 WORKDIR /app
 RUN apk add gcc g++ make
@@ -13,7 +13,7 @@ COPY ./bin/metrsd/Cargo.toml ./bin/metrsd/Cargo.toml
 RUN cargo chef prepare --recipe-path recipe.json --bin ./bin/metrsd
 
 # stage 2 - Cook our dependencies
-FROM --platform=$BUILDPLATFORM rust:1.74.0-alpine3.17 as cacher
+FROM --platform=$BUILDPLATFORM rust:1.75.0-alpine3.19 as cacher
 
 WORKDIR /app
 COPY --from=planner /usr/local/cargo/bin/cargo-chef /usr/local/cargo/bin/cargo-chef
@@ -24,7 +24,7 @@ RUN export ARCH=$(uname -m) \
   && cargo chef cook --release --target=$ARCH-unknown-linux-musl --recipe-path recipe.json --bin metrsd
 
 # stage 3 - Build our project
-FROM --platform=$BUILDPLATFORM rust:1.74.0-alpine3.17 as builder
+FROM --platform=$BUILDPLATFORM rust:1.75.0-alpine3.19 as builder
 
 ## Build our metrs daemon binary
 WORKDIR /app
@@ -40,7 +40,6 @@ RUN export ARCH=$(uname -m) \
 
 ## Compress the binary
 RUN export ARCH=$(uname -m) \
-  && upx --lzma --best /app/target/$ARCH-unknown-linux-musl/release/metrsd \
   && cp /app/target/$ARCH-unknown-linux-musl/release/metrsd /bin/metrsd
 
 # stage 4 - Create runtime image

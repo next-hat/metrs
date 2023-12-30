@@ -1,7 +1,8 @@
 use super::{CpuInfo, DiskInfo, MemoryInfo, NetworkInfo};
 
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "PascalCase")]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "PascalCase"))]
 pub struct MetrsdEvent {
   pub memory: MemoryInfo,
   pub cpus: Vec<CpuInfo>,
