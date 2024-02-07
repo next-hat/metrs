@@ -1258,9 +1258,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-bytes"
-version = "0.1.23"
+version = "0.1.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7acd545400175382999b237d093abbfc5d77c0192e6284438b3302cc5a7d922"
+checksum = "dcb17fec7b1e5f1b504a7f2f02a05ccfe7ad9ecb47fa039a0d7f5a55ff940dfa"
 dependencies = [
  "bitflags 2.4.1",
  "bytes",
