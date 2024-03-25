@@ -86,6 +86,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-broadcast"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "258b52a1aa741b9f09783b2d86cf0aeeb617bbf847f6933340a39644227acbdb"
+dependencies = [
+ "event-listener 5.0.0",
+ "event-listener-strategy 0.5.0",
+ "futures-core",
+ "pin-project-lite",
+]
+
+[[package]]
 name = "async-channel"
 version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -387,6 +399,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "cfg_aliases"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd16c4719339c4530435d38e511904438d07cce7950afa3718a84ac36c10e89e"
+
+[[package]]
 name = "clap"
 version = "4.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -529,6 +547,16 @@ checksum = "1bfb12502f3fc46cca1bb51ac28df9d618d813cdc3d2f25b9fe775a34af26bb3"
 dependencies = [
  "generic-array",
  "typenum",
+]
+
+[[package]]
+name = "ctrlc"
+version = "3.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "672465ae37dc1bc6380a6547a8883d5dd397b0f1faaad4f265726cc7042a5345"
+dependencies = [
+ "nix 0.28.0",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -893,7 +921,7 @@ dependencies = [
  "libc",
  "lockfree",
  "log",
- "nix",
+ "nix 0.23.2",
  "pin-project-lite",
  "rlimit",
  "scoped-tls",
@@ -1202,6 +1230,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab2156c4fce2f8df6c499cc1c763e4394b7482525bf2a9701c9d79d215f519e4"
+dependencies = [
+ "bitflags 2.4.2",
+ "cfg-if",
+ "cfg_aliases",
+ "libc",
+]
+
+[[package]]
 name = "ntapi"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1212,11 +1252,10 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "1.1.2"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9dfc244dc13f056ae4390c23a00554be4cc6efcb7cf5c126c2230fef5e74bcc1"
+checksum = "1c5d585c711903b5df7315008d1d0146133e92232c60f89fc624979c7244c531"
 dependencies = [
- "async-channel 2.2.0",
  "base64",
  "bitflags 2.4.2",
  "encoding_rs",
@@ -1225,31 +1264,26 @@ dependencies = [
  "log",
  "mime",
  "nanorand",
- "ntex-async-std",
  "ntex-bytes",
  "ntex-codec",
- "ntex-connect",
- "ntex-glommio",
  "ntex-h2",
  "ntex-http",
  "ntex-io",
  "ntex-macros",
+ "ntex-net",
  "ntex-router",
  "ntex-rt",
+ "ntex-server",
  "ntex-service",
  "ntex-tls",
- "ntex-tokio",
  "ntex-util",
- "oneshot",
  "percent-encoding",
  "pin-project-lite",
- "polling 3.4.0",
  "regex",
  "serde",
  "serde_json",
  "serde_urlencoded",
  "sha-1",
- "socket2 0.5.5",
  "thiserror",
 ]
 
@@ -1296,15 +1330,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a95f2470cb20e347c1a46ce647e16a0c896661f4ae09927a861447f828e674bc"
 dependencies = [
  "log",
- "ntex-async-std",
  "ntex-bytes",
- "ntex-glommio",
  "ntex-http",
  "ntex-io",
  "ntex-rt",
  "ntex-service",
  "ntex-tls",
- "ntex-tokio",
  "ntex-util",
  "thiserror",
 ]
@@ -1387,6 +1418,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "ntex-net"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "031be64e80db1209245961ceec1d2dda6f34fb357770fa103b65bd8098a811bc"
+dependencies = [
+ "log",
+ "ntex-async-std",
+ "ntex-bytes",
+ "ntex-glommio",
+ "ntex-http",
+ "ntex-io",
+ "ntex-rt",
+ "ntex-service",
+ "ntex-tokio",
+ "ntex-util",
+ "thiserror",
+]
+
+[[package]]
 name = "ntex-router"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1413,6 +1463,27 @@ dependencies = [
  "log",
  "oneshot",
  "tokio",
+]
+
+[[package]]
+name = "ntex-server"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6077d1a99561374c3ac3f87ff4dcce68f65804a8bac4b058be15405f46f80a1b"
+dependencies = [
+ "async-broadcast",
+ "async-channel 2.2.0",
+ "ctrlc",
+ "log",
+ "ntex-bytes",
+ "ntex-net",
+ "ntex-rt",
+ "ntex-service",
+ "ntex-util",
+ "oneshot",
+ "polling 3.4.0",
+ "signal-hook",
+ "socket2 0.5.5",
 ]
 
 [[package]]
