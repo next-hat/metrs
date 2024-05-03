@@ -73,6 +73,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
       - name: Create new draft release
         if: steps.release-exists.outcome == 'failure' && steps.release-exists.conclusion == 'success'
-        run: gh release create -t $VERSION -d $VERSION
+        run: gh release create -t $VERSION -d $VERSION -F ./bin/metrsd/CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
