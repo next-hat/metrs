@@ -1,6 +1,15 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 env:
   CARGO_TERM_COLOR: always
@@ -12,40 +21,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    # Install rust
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
-        components: llvm-tools-preview
-    # Cache tests
-    - uses: actions/cache@v3
-      with:
-        path: ./target/llvm-cov-target
-        key: llvm-cov-key
-    # Cache rust
-    - uses: Swatinem/rust-cache@v2
-    # Install cargo make
-    - uses: davidB/rust-cargo-make@v1
-    # Install llvm-cov
-    - uses: taiki-e/install-action@cargo-llvm-cov
-    # Install nextest
-    - uses: taiki-e/install-action@nextest
-    # Prepare server
-    - name: Start server
-      run: |
-        cargo build --bin metrsd
-        cargo make run-daemon -- --hosts tcp://0.0.0.0:8080 &
-        sleep 10
-    # Prepare CI
-    - name: Run tests
-      run: cargo make covgen
-    # Upload it to codecov
-    - name: Codecov
-      uses: codecov/codecov-action@v3.1.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./lcov.info
-        flags: unittests # optional
-        verbose: true # optional (default = false)
+      - uses: actions/checkout@v3
+      # Install rust
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: llvm-tools-preview
+      # Cache tests
+      - uses: actions/cache@v3
+        with:
+          path: ./target/llvm-cov-target
+          key: llvm-cov-key
+      # Cache rust
+      - uses: Swatinem/rust-cache@v2
+      # Install cargo make
+      - uses: davidB/rust-cargo-make@v1
+      # Install llvm-cov
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      # Install nextest
+      - uses: taiki-e/install-action@nextest
+      # Prepare server
+      - name: Start server
+        run: |
+          cargo build --bin metrsd
+          cargo make run-daemon -- --hosts tcp://0.0.0.0:8080 &
+          sleep 10
+      # Prepare CI
+      - name: Run tests
+        run: cargo make covgen
+      # Upload it to codecov
+      - name: Codecov
+        uses: codecov/codecov-action@v3.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./lcov.info
+          flags: unittests # optional
+          verbose: true # optional (default = false)

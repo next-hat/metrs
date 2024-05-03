@@ -2,7 +2,16 @@
 
 name: Clippy
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
   clippy:
@@ -20,7 +29,7 @@ jobs:
           path: ./target
           key: ${{ hashFiles('./Cargo.lock') }}
 
-     # Cache Rust
+      # Cache Rust
       - uses: actions/cache@v3
         with:
           path: ~/.cargo
