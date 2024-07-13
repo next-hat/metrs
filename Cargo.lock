@@ -1231,9 +1231,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "2.0.1"
+version = "2.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d088df90e0dd67ffd12e267281edfddb9277f6d91a861541f1b4d826c2fea32"
+checksum = "d7e294048bb36df432ea5fb3bb236445fbcba8de413b535463c0634ee4cb96bf"
 dependencies = [
  "base64",
  "bitflags 2.5.0",
@@ -1428,9 +1428,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-server"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "817bfb341cb76871ae84521465f353e5ed8db7d72b01cf4e3c1fbe2c01a4a63a"
+checksum = "4e04e83107d59c667ab49d7fff5bcbf7b144ff778a41fd94f68c5aea5485069e"
 dependencies = [
  "async-broadcast",
  "async-channel 2.3.1",
