@@ -1232,9 +1232,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "2.0.3"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7e294048bb36df432ea5fb3bb236445fbcba8de413b535463c0634ee4cb96bf"
+checksum = "67d650f702d20dc4e34a3339a71d7f41a7e780c84788888649df72d0382c6f9a"
 dependencies = [
  "base64",
  "bitflags 2.5.0",
@@ -1319,9 +1319,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-h2"
-version = "1.0.0"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f2f0b6bd1bdce912d5ccb4fb9e442f89c129dc07bdb5cad321606e976e989dc0"
+checksum = "98763f0ee78f247c02fe1bcdf6380f306a08d95169f9c2d83619d5e1cb26c738"
 dependencies = [
  "bitflags 2.5.0",
  "fxhash",
@@ -1332,7 +1332,6 @@ dependencies = [
  "ntex-http",
  "ntex-io",
  "ntex-net",
- "ntex-rt",
  "ntex-service",
  "ntex-util",
  "pin-project-lite",
@@ -1355,9 +1354,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-io"
-version = "2.0.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72c60a60c517453a2ea7fd40483b87531bd8d6ce0e545f4643dabd1f646620a9"
+checksum = "261f9cb7b47e806d7c789a1ea1537779dcd569abd534db3986369908aecefd10"
 dependencies = [
  "bitflags 2.5.0",
  "log",
@@ -1429,9 +1428,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-server"
-version = "2.1.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e04e83107d59c667ab49d7fff5bcbf7b144ff778a41fd94f68c5aea5485069e"
+checksum = "896c71a48e4a1379ac4c3c5aa16c4aa31f67507c6eb127983c71337de84aba50"
 dependencies = [
  "async-broadcast",
  "async-channel 2.3.1",
@@ -1486,9 +1485,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-util"
-version = "2.0.1"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6411c290c1b2a96ebea62cf568f271e7fdeb1a5defa6f8411f13d1211a6e8b4f"
+checksum = "cb89227b7c7b6850e17be71b1abe711e2b6e96d8e386b76ea259c155c4ab65d4"
 dependencies = [
  "bitflags 2.5.0",
  "futures-core",
