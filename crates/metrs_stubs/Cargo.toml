@@ -20,6 +20,6 @@ bytes = ["dep:ntex-bytes", "dep:serde_json"]
 
 [dependencies]
 serde = { version = "1", features = ["derive"], optional = true }
-sysinfo = { version = "0.31", optional = true }
+sysinfo = { version = "0.32", optional = true }
 ntex-bytes = { version = "0.1", optional = true }
 serde_json = { version = "1", optional = true }
