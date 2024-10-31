@@ -1,12 +1,12 @@
 [package]
 name = "metrsd_client"
-version = "0.5.4"
+version = "0.5.5"
 edition = "2021"
 authors = ["nanocl contributors <team@next-hat.com>"]
 description = "The Metrs daemon api client"
 readme = "readme.md"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/nxthat/metrs"
+repository = "https://github.com/next-hat/metrs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

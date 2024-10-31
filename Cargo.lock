@@ -1026,7 +1026,7 @@ version = "0.4.1"
 
 [[package]]
 name = "metrs_stubs"
-version = "0.5.3"
+version = "0.5.5"
 dependencies = [
  "ntex-bytes",
  "serde",
@@ -1036,7 +1036,7 @@ dependencies = [
 
 [[package]]
 name = "metrsd"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "clap",
  "env_logger",
@@ -1052,7 +1052,7 @@ dependencies = [
 
 [[package]]
 name = "metrsd_client"
-version = "0.5.4"
+version = "0.5.5"
 dependencies = [
  "futures",
  "metrs_stubs",
