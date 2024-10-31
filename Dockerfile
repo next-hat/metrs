@@ -48,7 +48,7 @@ FROM --platform=$BUILDPLATFORM scratch
 ## Copy the binary
 COPY --from=builder /bin/metrsd /bin/metrsd
 
-LABEL org.opencontainers.image.source https://github.com/nxthat/metrs
+LABEL org.opencontainers.image.source https://github.com/next-hat/metrs
 LABEL org.opencontainers.image.description Metrics Emitter
 
 ## Set entrypoint
