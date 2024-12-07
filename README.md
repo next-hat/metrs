@@ -4,6 +4,7 @@
   <p>
 
   [![Stars](https://img.shields.io/github/stars/next-hat/metrs?label=%E2%AD%90%20stars%20%E2%AD%90)](https://github.com/next-hat/metrs)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnext-hat%2Fmetrs.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnext-hat%2Fmetrs?ref=badge_shield)
   [![Build With](https://img.shields.io/badge/built_with-Rust-dca282.svg?style=flat)](https://github.com/next-hat/metrs)
   [![Chat on Discord](https://img.shields.io/discord/1011267493114949693?label=chat&logo=discord&style=flat)](https://discord.gg/WV4Aac8uZg)
 
@@ -77,3 +78,7 @@ async fn main() -> std::io::Result<()> {
 ## The cli
 
 There is no CLI available for Metrs at the moment, but it's planned for future releases.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnext-hat%2Fmetrs.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnext-hat%2Fmetrs?ref=badge_large)
