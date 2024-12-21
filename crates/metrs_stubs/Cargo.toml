@@ -3,11 +3,11 @@
 name = "metrs_stubs"
 version = "0.5.5"
 edition = "2021"
-authors = ["nanocl contributors <team@next-hat.com>"]
+authors = ["nanocl contributors <team@anonkey.com>"]
 description = "Metrs shared data type"
 license = "MIT OR Apache-2.0"
 readme = "readme.md"
-repository = "https://github.com/next-hat/metrs"
+repository = "https://github.com/anonkey/metrs"
 
 [lib]
 bench = false

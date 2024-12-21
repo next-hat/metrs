@@ -20,8 +20,8 @@ COPY --from=planner /usr/local/cargo/bin/cargo-chef /usr/local/cargo/bin/cargo-c
 COPY --from=planner /app .
 RUN apk add musl-dev libpq-dev openssl-dev
 ENV RUSTFLAGS="-C target-feature=+crt-static"
-RUN export ARCH=$(uname -m) \
-  && cargo chef cook --release --target=$ARCH-unknown-linux-musl --recipe-path recipe.json --bin metrsd
+RUN export ARCH=$(uname -m) &&
+  cargo chef cook --release --target=$ARCH-unknown-linux-musl --recipe-path recipe.json --bin metrsd
 
 # stage 3 - Build our project
 FROM --platform=$BUILDPLATFORM rust:1.82.0-alpine3.20 as builder
@@ -35,12 +35,12 @@ COPY ./crates/metrs_stubs/src ./crates/metrs_stubs/src
 COPY .git ./.git
 RUN apk add musl-dev libpq-dev openssl-dev git upx
 ENV RUSTFLAGS="-C target-feature=+crt-static"
-RUN export ARCH=$(uname -m) \
-  && cargo build --release --target=$ARCH-unknown-linux-musl --bin metrsd
+RUN export ARCH=$(uname -m) &&
+  cargo build --release --target=$ARCH-unknown-linux-musl --bin metrsd
 
 ## Compress the binary
-RUN export ARCH=$(uname -m) \
-  && cp /app/target/$ARCH-unknown-linux-musl/release/metrsd /bin/metrsd
+RUN export ARCH=$(uname -m) &&
+  cp /app/target/$ARCH-unknown-linux-musl/release/metrsd /bin/metrsd
 
 # stage 4 - Create runtime image
 FROM --platform=$BUILDPLATFORM scratch
@@ -48,7 +48,7 @@ FROM --platform=$BUILDPLATFORM scratch
 ## Copy the binary
 COPY --from=builder /bin/metrsd /bin/metrsd
 
-LABEL org.opencontainers.image.source https://github.com/next-hat/metrs
+LABEL org.opencontainers.image.source https://github.com/anonkey/metrs
 LABEL org.opencontainers.image.description Metrics Emitter
 
 ## Set entrypoint
