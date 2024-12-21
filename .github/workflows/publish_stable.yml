@@ -59,9 +59,9 @@ jobs:
           docker buildx build \
           --builder=buildx-multi-arch \
           --platform=linux/amd64,linux/arm/v7,linux/arm64 \
-          --label org.opencontainers.image.source=https://github.com/next-hat/metrs \
-          -t ghcr.io/next-hat/metrsd:$VERSION \
-          -t ghcr.io/next-hat/metrsd:latest \
+          --label org.opencontainers.image.source=https://github.com/anonkey/metrs \
+          -t ghcr.io/anonkey/metrsd:$VERSION \
+          -t ghcr.io/anonkey/metrsd:latest \
           -f ./Dockerfile . \
           --push
       # Upload it to release

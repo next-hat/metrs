@@ -2,11 +2,11 @@
 name = "metrs"
 version = "0.4.1"
 edition = "2021"
-authors = ["nanocl contributors <team@next-hat.com>"]
+authors = ["nanocl contributors <team@anonkey.com>"]
 description = "The Metrs daemon"
 license = "MIT OR Apache-2.0"
 readme = "../../readme.md"
-repository = "https://github.com/next-hat/metrs"
+repository = "https://github.com/anonkey/metrs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
