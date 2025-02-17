@@ -438,6 +438,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
 
 [[package]]
+name = "core_affinity"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "622892f5635ce1fc38c8f16dfc938553ed64af482edb5e150bf4caedbfcb2304"
+dependencies = [
+ "libc",
+ "num_cpus",
+ "winapi",
+]
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1133,9 +1144,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "2.10.0"
+version = "2.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1988f5a24be40f4cd06c5a1d66ff71da4dcf161f19a61013e6f967642c3c5bc"
+checksum = "5f9733b93874b834484947eafbbb8136544b20ea8473a46be40e197cb148284b"
 dependencies = [
  "base64",
  "bitflags",
@@ -1221,9 +1232,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-h2"
-version = "1.5.0"
+version = "1.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b235208bb51db69da394f3c77361bed9b62dc50b424842952ff636b1b36f800"
+checksum = "8f17e4eec506679d78f67b32c42ee4e35d0dcd97451251a4d891184185187520"
 dependencies = [
  "bitflags",
  "fxhash",
@@ -1234,7 +1245,6 @@ dependencies = [
  "ntex-http",
  "ntex-io",
  "ntex-net",
- "ntex-rt",
  "ntex-service",
  "ntex-util",
  "pin-project-lite",
@@ -1333,12 +1343,13 @@ dependencies = [
 
 [[package]]
 name = "ntex-server"
-version = "2.6.0"
+version = "2.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36cc0ec66ac03f7a76637a1264a57e3234bd95c478fc282ace88c3bde908dc5f"
+checksum = "ebf31f5c770cb0244a8125aba1c5dfaca38f145807a42ba33df30c35bb0c33f7"
 dependencies = [
  "async-broadcast",
  "async-channel 2.3.1",
+ "core_affinity",
  "ctrlc",
  "log",
  "ntex-bytes",
@@ -1404,6 +1415,16 @@ dependencies = [
  "ntex-service",
  "pin-project-lite",
  "slab",
+]
+
+[[package]]
+name = "num_cpus"
+version = "1.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4161fcb6d602d4d2081af7c3a45852d875a03dd337a6bfdd6e06407b61342a43"
+dependencies = [
+ "hermit-abi 0.3.9",
+ "libc",
 ]
 
 [[package]]
