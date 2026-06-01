@@ -10,7 +10,7 @@ COPY ./crates/metrs_stubs ./crates/metrs_stubs
 COPY ./crates/metrsd_client ./crates/metrsd_client
 COPY ./bin/metrs/Cargo.toml ./bin/metrs/Cargo.toml
 COPY ./bin/metrsd/Cargo.toml ./bin/metrsd/Cargo.toml
-RUN cargo chef prepare --recipe-path recipe.json --bin ./bin/metrsd
+RUN cargo chef prepare --recipe-path recipe.json --bin metrsd
 
 # stage 2 - Cook our dependencies
 FROM --platform=$BUILDPLATFORM rust:1.96.0-alpine3.23 as cacher
