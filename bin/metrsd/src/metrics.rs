@@ -54,9 +54,7 @@ async fn sync_metrics(event_emitter: &EventEmitter, tick_interval: u64) {
 }
 
 pub fn spawn_metrics(event_emitter: EventEmitter, tick_interval: u64) {
-  rt::Arbiter::new().exec_fn(move || {
-    rt::spawn(async move {
-      sync_metrics(&event_emitter, tick_interval).await;
-    });
+  rt::Arbiter::new().handle().spawn(async move {
+    sync_metrics(&event_emitter, tick_interval).await;
   });
 }

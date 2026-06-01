@@ -24,7 +24,9 @@ mod tests {
 
   #[ntex::test]
   async fn test_subscribe() {
-    let client = MetrsdClient::connect("http://127.0.0.1:8080");
+    let client = MetrsdClient::connect("http://127.0.0.1:8080")
+      .await
+      .unwrap();
     let mut stream = client.subscribe().await.unwrap();
     let mut count = 0;
     const MAX_COUNT: usize = 5;

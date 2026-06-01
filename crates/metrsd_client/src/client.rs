@@ -1,11 +1,10 @@
 use futures::{StreamExt, TryStreamExt};
 use ntex::{
-  rt,
+  ServiceFactory,
   channel::mpsc::Receiver,
-  http::{
-    Client, StatusCode,
-    client::{Connector, ClientRequest, ClientResponse},
-  },
+  client::{Client, ClientRequest, ClientResponse, Connector},
+  http::StatusCode,
+  rt,
 };
 
 use crate::error::ApiError;
@@ -17,39 +16,54 @@ pub struct MetrsdClient {
 }
 
 impl MetrsdClient {
-  pub fn connect(url: &'static str) -> Self {
+  pub async fn connect(url: &'static str) -> Result<Self, ApiError> {
     match url {
       url if url.starts_with("http://") || url.starts_with("https://") => {
-        let client = Client::build()
-          .connector(
-            Connector::default()
-              .timeout(ntex::time::Millis::from_secs(20))
-              .finish(),
-          )
-          .timeout(ntex::time::Millis::from_secs(20))
-          .finish();
-        MetrsdClient {
+        let client = Client::builder()
+          .response_timeout(ntex::time::Millis::from_secs(20))
+          .build(ntex::SharedCfg::default())
+          .await
+          .map_err(|err| ApiError {
+            status: StatusCode::INTERNAL_SERVER_ERROR,
+            msg: format!("Unable to create client got error : {err}"),
+          })?;
+        Ok(MetrsdClient {
           client,
           url: url.to_owned(),
-        }
+        })
       }
       url if url.starts_with("unix://") => {
-        let client = Client::build()
-          .connector(
-            Connector::default()
-              .connector(ntex::service::fn_service(move |_| async {
-                let path = url.trim_start_matches("unix://");
-                Ok::<_, _>(rt::unix_connect(path).await?)
-              }))
-              .timeout(ntex::time::Millis::from_secs(20))
-              .finish(),
-          )
-          .timeout(ntex::time::Millis::from_secs(20))
-          .finish();
-        MetrsdClient {
+        let unix_socket = url.trim_start_matches("unix://").to_owned();
+        let mut client = Client::builder()
+          .response_payload_timeout(ntex::time::Millis::from_secs(20))
+          .response_timeout(ntex::time::Millis::from_secs(20));
+        client = client.connector::<&str>(
+          Connector::default().connector(
+            ntex::service::fn_service(move |_| {
+              let unix_socket = unix_socket.clone();
+              async move {
+                rt::unix_connect(unix_socket, ntex::SharedCfg::default())
+                  .await
+                  .map_err(ntex::connect::ConnectError::from)
+              }
+            })
+            .map_init_err(|_| {
+              ntex::connect::ConnectServiceError::CannotCreateService
+            }),
+          ),
+        );
+        let client =
+          client
+            .build(ntex::SharedCfg::default())
+            .await
+            .map_err(|err| ApiError {
+              status: StatusCode::INTERNAL_SERVER_ERROR,
+              msg: format!("Unable to create client got error : {err}"),
+            })?;
+        Ok(MetrsdClient {
           client,
           url: String::from("http://localhost"),
-        }
+        })
       }
       url => {
         panic!("Invalid url valid scheme are [http,https,unix] got: {url}");
@@ -120,15 +134,21 @@ mod tests {
 
   #[ntex::test]
   async fn test_new_client() {
-    let client = MetrsdClient::connect("http://unknow.internal");
+    let client = MetrsdClient::connect("http://unknow.internal")
+      .await
+      .unwrap();
     assert_eq!(client.url, "http://unknow.internal");
     let res = client.subscribe().await;
     assert!(res.is_err());
-    let client = MetrsdClient::connect("https://unknow.internal");
+    let client = MetrsdClient::connect("https://unknow.internal")
+      .await
+      .unwrap();
     assert_eq!(client.url, "https://unknow.internal");
     let res = client.subscribe().await;
     assert!(res.is_err());
-    let client = MetrsdClient::connect("unix:///run/_non_existent.sock");
+    let client = MetrsdClient::connect("unix:///run/_non_existent.sock")
+      .await
+      .unwrap();
     assert_eq!(client.url, "http://localhost");
     let res = client.subscribe().await;
     assert!(res.is_err());
@@ -137,12 +157,12 @@ mod tests {
   #[ntex::test]
   #[should_panic]
   async fn test_new_client_wrong_scheme() {
-    let _ = MetrsdClient::connect("ftp://domain.com");
+    let _ = MetrsdClient::connect("ftp://domain.com").await;
   }
 
   #[ntex::test]
   async fn test_gen_url() {
-    let client = MetrsdClient::connect("http://domain.com");
+    let client = MetrsdClient::connect("http://domain.com").await.unwrap();
     assert_eq!(
       client.gen_url("/test".to_string()),
       "http://domain.com/test"
@@ -151,14 +171,16 @@ mod tests {
 
   #[ntex::test]
   async fn test_wrong_get() {
-    let client = MetrsdClient::connect("http://321313131");
+    let client = MetrsdClient::connect("http://321313131").await.unwrap();
     let res = client.get("/test".to_string()).send().await;
     assert!(res.is_err());
   }
 
   #[ntex::test]
   async fn test_api_error() {
-    let client = MetrsdClient::connect("http://127.0.0.1:8080");
+    let client = MetrsdClient::connect("http://127.0.0.1:8080")
+      .await
+      .unwrap();
     let mut res = client.get("/test".to_string()).send().await.unwrap();
     let status = res.status();
     let err = is_api_error(&mut res, &status).await;

@@ -1,12 +1,11 @@
 use thiserror::Error;
 use serde::{Serialize, Deserialize};
-use ntex::http::{
-  StatusCode,
-  error::PayloadError,
+use ntex::{
   client::{
     ClientResponse,
-    error::{SendRequestError, JsonPayloadError},
+    error::{ClientError, JsonPayloadError},
   },
+  http::{StatusCode, error::PayloadError},
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -33,7 +32,7 @@ pub enum MetrsClientError {
   #[error(transparent)]
   Payload(#[from] PayloadError),
   #[error(transparent)]
-  SendRequest(#[from] SendRequestError),
+  ClientError(#[from] ClientError),
   #[error(transparent)]
   JsonPayload(#[from] JsonPayloadError),
   #[error(transparent)]

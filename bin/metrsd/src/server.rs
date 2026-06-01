@@ -29,11 +29,17 @@ pub fn gen_srv<T>(
 where
   T: Into<String> + Clone,
 {
-  let mut srv = web::HttpServer::new(move || {
-    web::App::new()
-      .state(event_emitter.clone())
-      .service(subscribe)
-      .default_service(web::route().to(unhandled_route))
+  let mut srv = web::HttpServer::new({
+    let event_emitter = event_emitter.clone();
+    move || {
+      let event_emitter = event_emitter.clone();
+      async move {
+        web::App::new()
+          .state(event_emitter)
+          .service(subscribe)
+          .default_service(web::route().to(unhandled_route))
+      }
+    }
   });
 
   for host in hosts {
@@ -87,15 +93,21 @@ mod tests {
       .try_init();
   }
 
-  pub fn generate_server(event_emitter: EventEmitter) -> web::test::TestServer {
+  pub async fn generate_server(
+    event_emitter: EventEmitter,
+  ) -> web::test::TestServer {
     before();
     // Create test server
-    web::test::server(move || {
-      web::App::new()
-        .state(event_emitter.clone())
-        .service(subscribe)
-        .default_service(web::route().to(unhandled_route))
+    web::test::server({
+      let event_emitter = event_emitter.clone();
+      async move || {
+        web::App::new()
+          .state(event_emitter.clone())
+          .service(subscribe)
+          .default_service(web::route().to(unhandled_route))
+      }
     })
+    .await
   }
 
   #[ntex::test]
@@ -119,7 +131,7 @@ mod tests {
   async fn test_subscribe() {
     let event_emitter = EventEmitter::new();
     metrics::spawn_metrics(event_emitter.clone(), 10);
-    let srv = generate_server(event_emitter.clone());
+    let srv = generate_server(event_emitter.clone()).await;
     let req = srv.get("/subscribe").send();
     let resp = req.await.unwrap();
     assert_eq!(resp.status(), StatusCode::OK);
@@ -144,7 +156,7 @@ mod tests {
   #[ntex::test]
   async fn test_unhandled_route() {
     let event_emitter = EventEmitter::new();
-    let srv = generate_server(event_emitter.clone());
+    let srv = generate_server(event_emitter.clone()).await;
     let req = srv.get("/unhandled").send();
     let resp = req.await.unwrap();
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
