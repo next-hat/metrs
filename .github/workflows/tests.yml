@@ -52,7 +52,7 @@ jobs:
         run: cargo make covgen
       # Upload it to codecov
       - name: Codecov
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v6.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./lcov.info
