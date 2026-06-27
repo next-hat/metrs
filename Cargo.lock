@@ -803,9 +803,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "3.9.6"
+version = "3.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e643721853014b0fc54845c1b2d30a222a0d1e055a71b10beadc1dd27eed777b"
+checksum = "4f0baaa4f3df86d4f7e84b9cf7153743496360c79c689152ca9a2f1172ca5c2f"
 dependencies = [
  "base64",
  "bitflags",
@@ -846,9 +846,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-bytes"
-version = "1.6.8"
+version = "1.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d5ca9b5f31f38fcb91ad6a53c2bf9f70a5883b98fa1bf3ed47fcc2b2b1910aa"
+checksum = "c79595696d276a1be070159fb057e44c7b8b7c921f6690ddd3323cda71c70e92"
 dependencies = [
  "bytes",
  "serde",
@@ -865,9 +865,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-dispatcher"
-version = "3.2.0"
+version = "3.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1255e324e57971e3b3ea8374e9e6f41478f41f16445e897bc5620787f384c227"
+checksum = "76e8f0df705437667567cf9a0328add598c950769b0cfec5cea0cd73c607ab55"
 dependencies = [
  "bitflags",
  "log",
@@ -880,9 +880,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-error"
-version = "2.2.0"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "614a4c1c3cd23c231172fe20ab42bb66e8572e8c4cf282285723fc423b64834e"
+checksum = "8d47e8dee801da88cca194481cb2f04a5de7cb949e3e9785086fb1b6a010884d"
 dependencies = [
  "backtrace",
  "foldhash 0.2.0",
@@ -892,9 +892,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-h2"
-version = "3.11.1"
+version = "3.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d379cdd9c36cd33885e71878a76c8241fc479fed0924c02fcefb444e986598f"
+checksum = "462aedfed773643f8dce7b6173edcfeedc24f9dbf55a8f2c2fce3906163924f0"
 dependencies = [
  "bitflags",
  "foldhash 0.2.0",
@@ -932,10 +932,11 @@ dependencies = [
 
 [[package]]
 name = "ntex-io"
-version = "3.12.2"
+version = "3.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "55e0ffd3b5c45c08370b025861de80bf759d1e282d30d65944020f36ad0c2b9d"
+checksum = "c28852591956578e02f2905bb9ff73b677ea53abf5b726dea57ac4a84191758b"
 dependencies = [
+ "backtrace",
  "bitflags",
  "log",
  "ntex-bytes",
@@ -972,9 +973,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-net"
-version = "3.12.0"
+version = "3.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01215e614ad3605afe22de4d1346dde76ca10078a497ebb2cafce159e45f00fc"
+checksum = "312bd7f8090f1dee5b3f0d9eaa3a29e1642341943ee63bef3299051b27dd1e55"
 dependencies = [
  "bitflags",
  "cfg-if",
@@ -1025,36 +1026,41 @@ dependencies = [
 
 [[package]]
 name = "ntex-rt"
-version = "3.14.1"
+version = "3.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45e4391bcd803ae4ed6a844127d55329d0e33cb4b18994346ab2b7c02222f3e7"
+checksum = "225e619aa588c9ef95940a7fb99e45077ed261646dfc5a1754ca1712126175c9"
 dependencies = [
  "async-channel",
  "async-task",
+ "atomic-waker",
+ "backtrace",
  "crossbeam-channel",
  "crossbeam-queue",
+ "ctrlc",
  "foldhash 0.2.0",
  "futures-timer",
+ "libc",
  "log",
  "ntex-error",
  "ntex-service",
- "oneshot 0.2.1",
+ "oneshot",
  "parking_lot",
  "scoped-tls",
+ "signal-hook",
  "swap-buffer-queue",
  "tokio",
 ]
 
 [[package]]
 name = "ntex-server"
-version = "3.9.0"
+version = "3.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85ac36e4b11c0cf0ae53fea574a1ab37e0c54331eb78f0b5a5e02cf6604a1f04"
+checksum = "f70eb9db7d9495585b82d8b734037eeeaee2778ab83c6a8ed8118df97b046837"
 dependencies = [
  "async-channel",
  "atomic-waker",
  "core_affinity",
- "ctrlc",
+ "libc",
  "log",
  "ntex-io",
  "ntex-net",
@@ -1062,8 +1068,7 @@ dependencies = [
  "ntex-rt",
  "ntex-service",
  "ntex-util",
- "oneshot 0.1.13",
- "signal-hook",
+ "oneshot",
  "socket2",
  "uuid",
 ]
@@ -1081,9 +1086,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-tls"
-version = "3.6.2"
+version = "3.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0353376f7869dd54d3175c6b95388ab181968c22c4cac9827dea1c5f9e5b41b"
+checksum = "8fa8909d6cef273298d192c51345e1124200f6a655336848659464e7950de4cf"
 dependencies = [
  "log",
  "ntex-bytes",
@@ -1201,12 +1206,6 @@ name = "once_cell_polyfill"
 version = "1.70.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
-
-[[package]]
-name = "oneshot"
-version = "0.1.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "269bca4c2591a28585d6bf10d9ed0332b7d76900a1b02bec41bdc3a2cdcda107"
 
 [[package]]
 name = "oneshot"
@@ -1474,9 +1473,9 @@ dependencies = [
 
 [[package]]
 name = "signal-hook"
-version = "0.3.18"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d881a16cf4426aa584979d30bd82cb33429027e42122b169753d6ef1085ed6e2"
+checksum = "b2a0c28ca5908dbdbcd52e6fdaa00358ab88637f8ab33e1f188dd510eb44b53d"
 dependencies = [
  "libc",
  "signal-hook-registry",
