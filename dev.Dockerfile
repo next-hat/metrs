@@ -1,4 +1,4 @@
-FROM rust:1.96.0-alpine3.23
+FROM rust:1.97.0-alpine3.23
 
 RUN apk add musl-dev make
 RUN cargo install cargo-watch
