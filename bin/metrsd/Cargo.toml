@@ -1,6 +1,6 @@
 [package]
 name = "metrsd"
-version = "0.5.8"
+version = "0.6.0"
 edition = "2021"
 rust-version = "1.97"
 authors = ["nanocl contributors <team@next-hat.com>"]
@@ -27,7 +27,7 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 sysinfo = "0.39.6"
 tokio = { version = "1.53.2", features = ["sync"] }
-metrs_stubs = { version = "0.5", path = "../../crates/metrs_stubs", features = [
+metrs_stubs = { version = "0.6", path = "../../crates/metrs_stubs", features = [
   "serde",
   "sysinfo",
   "bytes",
