@@ -3,9 +3,9 @@ use ntex::{web, http::StatusCode};
 use crate::event_emitter::EventEmitter;
 use crate::error::{MetrsError, HttpError};
 
-#[ntex::web::get("/subscribe")]
 async fn subscribe(
-  event_emitter: web::types::State<EventEmitter>,
+  event_emitter: &web::AppState<EventEmitter>,
+  (): (),
 ) -> Result<web::HttpResponse, HttpError> {
   let client = event_emitter.subscribe().await?;
   Ok(
@@ -31,14 +31,11 @@ where
 {
   let mut srv = web::HttpServer::new({
     let event_emitter = event_emitter.clone();
-    move || {
-      let event_emitter = event_emitter.clone();
-      async move {
-        web::App::new()
-          .state(event_emitter)
-          .service(subscribe)
-          .default_service(web::route().to(unhandled_route))
-      }
+    async move |_| {
+      web::App::<web::AppState<EventEmitter>>::new()
+        .route("/subscribe", web::get().to_with_state(subscribe))
+        .default_service(web::route().to(unhandled_route))
+        .build_with::<()>(web::AppState::new(event_emitter.clone()))
     }
   });
 
@@ -47,14 +44,17 @@ where
     match &host {
       host if host.starts_with("unix://") => {
         let path = host.trim_start_matches("unix://");
-        srv = srv.bind_uds(path).map_err(|err| {
-          MetrsError::Error(format!("Unable to bind server: {err}"))
-        })?;
+        srv =
+          srv
+            .bind_uds(path, ntex::SharedCfg::default())
+            .map_err(|err| {
+              MetrsError::Error(format!("Unable to bind server: {err}"))
+            })?;
         log::info!("Listening on: {host}")
       }
       host if host.starts_with("tcp://") => {
         let addr = host.trim_start_matches("tcp://");
-        srv = srv.bind(addr).map_err(|err| {
+        srv = srv.bind(addr, ntex::SharedCfg::default()).map_err(|err| {
           MetrsError::Error(format!("Unable to bind server: {err}"))
         })?;
         log::info!("Listening on: {host}")
@@ -74,10 +74,10 @@ where
 mod tests {
   use super::*;
 
-  use std::time::Duration;
+  use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
   use ntex::web;
-  use ntex::time::interval;
+  use ntex::time::sleep;
   use futures::{TryStreamExt, StreamExt};
 
   use crate::metrics;
@@ -100,25 +100,35 @@ mod tests {
     // Create test server
     web::test::server({
       let event_emitter = event_emitter.clone();
-      async move || {
-        web::App::new()
-          .state(event_emitter.clone())
-          .service(subscribe)
+      async move |_| {
+        web::App::<web::AppState<EventEmitter>>::new()
+          .route("/subscribe", web::get().to_with_state(subscribe))
           .default_service(web::route().to(unhandled_route))
+          .build_with::<()>(web::AppState::new(event_emitter.clone()))
       }
     })
-    .await
   }
 
   #[ntex::test]
   async fn test_gen_srv() {
     let event_emitter = EventEmitter::new();
-    let hosts = vec!["unix:///tmp/metrsd.sock"];
+    let socket = std::env::temp_dir().join(format!(
+      "metrsd-{}-{}.sock",
+      std::process::id(),
+      SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos()
+    ));
+    let hosts = vec![format!("unix://{}", socket.display())];
     let srv = gen_srv(&hosts, event_emitter.clone());
     assert!(srv.is_ok());
-    let hosts = vec!["tcp://0.0.0.0:1245"];
+    srv.unwrap().stop(false).await;
+    assert!(!socket.exists());
+    let hosts = vec!["tcp://127.0.0.1:0"];
     let srv = gen_srv(&hosts, event_emitter.clone());
     assert!(srv.is_ok());
+    srv.unwrap().stop(false).await;
     let hosts = vec!["wrong_scheme://dsadas"];
     let srv = gen_srv(&hosts, event_emitter);
     assert!(srv.is_err());
@@ -135,6 +145,10 @@ mod tests {
     let req = srv.get("/subscribe").send();
     let resp = req.await.unwrap();
     assert_eq!(resp.status(), StatusCode::OK);
+    assert_eq!(
+      resp.headers().get("content-type").unwrap(),
+      "text/event-stream"
+    );
     let mut stream = resp.into_stream();
     let mut count = 0;
     const MAX_COUNT: usize = 5;
@@ -150,7 +164,7 @@ mod tests {
     // That will close the connection
     drop(stream);
     // Wait 15 seconds to trigger cleanup
-    interval(Duration::from_secs(15)).tick().await;
+    sleep(Duration::from_secs(15)).await;
   }
 
   #[ntex::test]
@@ -160,5 +174,9 @@ mod tests {
     let req = srv.get("/unhandled").send();
     let resp = req.await.unwrap();
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+    assert_eq!(
+      resp.json::<serde_json::Value>().await.unwrap(),
+      serde_json::json!({ "msg": "Unhandled route" })
+    );
   }
 }

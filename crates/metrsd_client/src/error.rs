@@ -21,7 +21,7 @@ pub struct ApiError {
 
 impl std::fmt::Display for ApiError {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(f, "{}", &self.msg)
+    write!(f, "{}", self.msg)
   }
 }
 
@@ -32,9 +32,9 @@ pub enum MetrsClientError {
   #[error(transparent)]
   Payload(#[from] PayloadError),
   #[error(transparent)]
-  ClientError(#[from] ClientError),
+  ClientError(#[from] ntex::error::Error<ClientError>),
   #[error(transparent)]
-  JsonPayload(#[from] JsonPayloadError),
+  JsonPayload(#[from] ntex::error::Error<JsonPayloadError>),
   #[error(transparent)]
   Utf8Error(#[from] std::string::FromUtf8Error),
 }

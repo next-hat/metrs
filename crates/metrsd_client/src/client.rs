@@ -1,8 +1,7 @@
 use futures::{StreamExt, TryStreamExt};
 use ntex::{
-  ServiceFactory,
   channel::mpsc::Receiver,
-  client::{Client, ClientRequest, ClientResponse, Connector},
+  client::{Client, ClientConfig, ClientRequest, ClientResponse},
   http::StatusCode,
   rt,
 };
@@ -19,14 +18,13 @@ impl MetrsdClient {
   pub async fn connect(url: &'static str) -> Result<Self, ApiError> {
     match url {
       url if url.starts_with("http://") || url.starts_with("https://") => {
-        let client = Client::builder()
-          .response_timeout(ntex::time::Millis::from_secs(20))
-          .build(ntex::SharedCfg::default())
-          .await
-          .map_err(|err| ApiError {
-            status: StatusCode::INTERNAL_SERVER_ERROR,
-            msg: format!("Unable to create client got error : {err}"),
-          })?;
+        let cfg = ntex::SharedCfg::new("metrsd-client")
+          .add(
+            ClientConfig::new()
+              .set_response_timeout(ntex::time::Millis::from_secs(20)),
+          )
+          .build();
+        let client = Client::builder().build(cfg);
         Ok(MetrsdClient {
           client,
           url: url.to_owned(),
@@ -34,32 +32,26 @@ impl MetrsdClient {
       }
       url if url.starts_with("unix://") => {
         let unix_socket = url.trim_start_matches("unix://").to_owned();
-        let mut client = Client::builder()
-          .response_payload_timeout(ntex::time::Millis::from_secs(20))
-          .response_timeout(ntex::time::Millis::from_secs(20));
-        client = client.connector::<&str>(
-          Connector::default().connector(
-            ntex::service::fn_service(move |_| {
-              let unix_socket = unix_socket.clone();
-              async move {
-                rt::unix_connect(unix_socket, ntex::SharedCfg::default())
-                  .await
-                  .map_err(ntex::connect::ConnectError::from)
-              }
-            })
-            .map_init_err(|_| {
-              ntex::connect::ConnectServiceError::CannotCreateService
-            }),
-          ),
-        );
-        let client =
-          client
-            .build(ntex::SharedCfg::default())
-            .await
-            .map_err(|err| ApiError {
-              status: StatusCode::INTERNAL_SERVER_ERROR,
-              msg: format!("Unable to create client got error : {err}"),
-            })?;
+        let cfg = ntex::SharedCfg::new("metrsd-client")
+          .add(
+            ClientConfig::new()
+              .set_response_payload_timeout(ntex::time::Millis::from_secs(20))
+              .set_response_timeout(ntex::time::Millis::from_secs(20)),
+          )
+          .build();
+        let client = Client::builder()
+          .connector(ntex::service::fn_service_st(
+            async move |cfg: &ntex::SharedCfg, _| {
+              rt::unix_connect(&unix_socket, cfg.clone())
+                .await
+                .map_err(|err| {
+                  ntex::error::Error::from(ntex::connect::ConnectError::from(
+                    err,
+                  ))
+                })
+            },
+          ))
+          .build(cfg);
         Ok(MetrsdClient {
           client,
           url: String::from("http://localhost"),

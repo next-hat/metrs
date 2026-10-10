@@ -10,6 +10,8 @@ use crate::event_emitter::EventEmitter;
 async fn sync_metrics(event_emitter: &EventEmitter, tick_interval: u64) {
   let mut sys = System::new();
   let interval = interval(Duration::from_secs(tick_interval));
+  // Consume ntex v4's immediate first tick before waiting between updates.
+  interval.tick().await;
   loop {
     sys.refresh_all();
     let networks = Networks::new_with_refreshed_list()

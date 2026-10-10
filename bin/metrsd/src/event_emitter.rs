@@ -1,16 +1,14 @@
 use std::{
   pin::Pin,
+  convert::Infallible,
   time::Duration,
   sync::{Arc, Mutex},
   task::{Context, Poll},
 };
 
 use ntex::{
-  rt, web,
-  util::Bytes,
-  time::interval,
-  http::StatusCode,
-  web::error::{Error, BlockingError},
+  rt, web, util::Bytes, time::sleep, http::StatusCode,
+  web::error::BlockingError,
 };
 use futures::Stream;
 use tokio::sync::mpsc::{Sender, Receiver, channel};
@@ -23,7 +21,7 @@ use crate::error::HttpError;
 pub struct Client(Receiver<Bytes>);
 
 impl Stream for Client {
-  type Item = Result<Bytes, Error>;
+  type Item = Result<Bytes, Infallible>;
 
   fn poll_next(
     mut self: Pin<&mut Self>,
@@ -60,8 +58,7 @@ impl EventEmitter {
   fn spawn_check_connection(mut self) {
     rt::spawn(async move {
       loop {
-        let task = interval(Duration::from_secs(10));
-        task.tick().await;
+        sleep(Duration::from_secs(10)).await;
         if let Err(err) = self.check_connection() {
           log::error!("{err}");
         }

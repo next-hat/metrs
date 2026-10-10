@@ -26,11 +26,13 @@ impl std::fmt::Display for HttpError {
   }
 }
 
-impl ntex::web::WebResponseError for HttpError {
+impl std::error::Error for HttpError {}
+
+impl<St> ntex::web::WebResponseError<St, web::DefaultError> for HttpError {
   // Builds the actual response to send back when an error occurs
-  fn error_response(&self, _: &web::HttpRequest) -> web::HttpResponse {
+  fn error_response(&self, _: &St) -> web::HttpResponse {
     log::error!("{self}");
     let err_json = serde_json::json!({ "msg": self.msg });
-    web::HttpResponse::build(self.status).json(&err_json)
+    web::HttpResponse::builder(self.status).json(&err_json)
   }
 }
