@@ -885,9 +885,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-bytes"
-version = "1.14.0"
+version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97b26252da3024ef2ff4e0528403791e91c1c477fe650229f27416732c281e98"
+checksum = "4b66468ed6abc26b826b399f5f66dcfd03f1818587b7a39ec537ef1d88617aee"
 dependencies = [
  "bytes",
  "serde",
